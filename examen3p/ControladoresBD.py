@@ -22,41 +22,44 @@ class controladorBD:
         else:
             cursor=conx.cursor()
             sqlinsert="insert into TB_Europa(Mercancia,Pais) values(?,?)"
-            cursor.execute(sqlinsert,mer,pai)
+            datos=(mer,pai)
+            cursor.execute(sqlinsert,datos)
             conx.commit()
             conx.close
             messagebox.showinfo("Exito","Usuario guardado")
             
-    def consultar(self,id):
+    def consultar(self,pai):
         conx=self.conexionBD() #Para acceder a la funcion conexion
-        if(id==""):
+        if(pai==""):
                 messagebox.showwarning("Cuidado","Escribe un Identificdor")
                 conx.close()
         else:
             try:
                 cursor=conx.cursor()
-                sqlSelect="Select* from TB_Europa where IDImpo = "+id
-                cursor.execute(sqlSelect)
+                sqlSelect="Select* from TB_Europa where pais = ?"
+                pais=(pai)
+                cursor.execute(sqlSelect,pais)
                 RSusuario=cursor.fetchall()#result set o variable para guardar la información de la consulta, lo que tenga cursor lo pasamos a la variabale para seso sirve la funcion cursor.fetchall()
                 conx.close()
                 return RSusuario
             except sqlite3.OperationalError:
                 print("Error de Consulta")
-        
+
     def eliminar(self,id):
         pass
         conx=self.conexionBD()
         cursor=conx.cursor()
-        sqldelete="DELETE FROM TB_Europa WHERE IDImpo="+id
+        sqldelete="DELETE FROM TB_Europa WHERE IDImpo= ? "
         
         if(id==""):
                 messagebox.showwarning("Cuidado","Escribe un Identificdor")
                 conx.close()
         else:
             try:
-                cursor.execute(sqldelete)
+                datos=(id)
+                cursor.execute(sqldelete,datos)
                 conx.commit()
                 conx.close()
                 messagebox.showinfo("Correcto","Entrada Eliminada")
             except sqlite3.OperationalError:
-                print("Error de Consulta")
+                print("Error de eliminación")
